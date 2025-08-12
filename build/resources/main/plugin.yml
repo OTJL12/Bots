@@ -1,0 +1,5 @@
+name: Bots
+version: '1.0-SNAPSHOT'
+main: skib.toilet.bots.Bots
+api-version: '1.21'
+depend: [Citizens]
