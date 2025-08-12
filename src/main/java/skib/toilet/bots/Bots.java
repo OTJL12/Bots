@@ -38,11 +38,15 @@ public class Bots extends JavaPlugin {
             NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
             npc.spawn(spawn);
             npcs.add(npc);
+            scheduleRandomMovement(npc);
         }
+    }
 
-        // Movement task
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            for (NPC npc : npcs) {
+    private void scheduleRandomMovement(NPC npc) {
+        long delayTicks = (2 + random.nextInt(5)) * 20L; // 2-6 seconds
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            if (npc.isSpawned()) {
                 if (Math.random() < 0.7) { // 70% move
                     Location loc = npc.getEntity().getLocation();
                     double dx = (Math.random() - 0.5) * 10;
@@ -55,7 +59,7 @@ public class Bots extends JavaPlugin {
                             .speedModifier(1.0F)
                             .baseSpeed(1.0F)
                             .stuckAction((npc1, path) -> {
-                                Location stuckLoc = npc1.getEntity().getLocation(); // renamed to stuckLoc
+                                Location stuckLoc = npc1.getEntity().getLocation();
                                 Location newTarget = stuckLoc.clone().add(
                                         (Math.random() - 0.5) * 8,
                                         0,
@@ -71,8 +75,10 @@ public class Bots extends JavaPlugin {
                             (Math.random() - 0.5) * 5, 0, (Math.random() - 0.5) * 5
                     ));
                 }
+                // Schedule next movement
+                scheduleRandomMovement(npc);
             }
-        }, 0L, 60L); // every 3 seconds
+        }, delayTicks);
     }
 
     @Override
