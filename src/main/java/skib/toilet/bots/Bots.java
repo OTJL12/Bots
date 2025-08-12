@@ -5,6 +5,8 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,6 +40,18 @@ public class Bots extends JavaPlugin {
             NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
             npc.spawn(spawn);
             npcs.add(npc);
+
+            // Delay 1 tick to ensure entity is fully spawned, then set tab list name
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                if (npc.isSpawned() && npc.getEntity() instanceof Player playerEntity) {
+                    playerEntity.setCustomNameVisible(true);
+                    playerEntity.setPlayerListName(npc.getName());
+                    // Optionally, also show nameplate above head
+                    playerEntity.setCustomName(npc.getName());
+                }
+            }, 1L);
+
+            // Schedule random movement as before
             scheduleRandomMovement(npc);
         }
     }
