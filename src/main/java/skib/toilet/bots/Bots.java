@@ -57,7 +57,7 @@ public class Bots extends JavaPlugin {
     }
 
     private void scheduleRandomMovement(NPC npc) {
-        long delayTicks = (2 + random.nextInt(5)) * 20L; // 2-6 seconds
+        long delayTicks = 10L + (random.nextInt(3) * 20L); // 2-6 seconds
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (npc.isSpawned()) {
